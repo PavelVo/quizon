@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        // Функция для обновления списка пользователей
+        function updateUsers() {
+            $.ajax({
+                url: "/get_users",  // Запрашиваем список пользователей
+                type: "GET",
+                success: function(data) {
+                    let userList = $("#user-list");
+                    userList.empty();  // Очищаем текущий список
+
+                    // Добавляем каждого пользователя в список
+                    for (let i = 0; i < data.length; i++) {
+                        let user = data[i];
+                        let deleteButton = `
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="delete_user" value="${user}">
+                                <button type="submit">Удалить пользователя</button>
+                            </form>
+                        `;
+
+                        // Добавляем пользователя и кнопку удаления в список
+                        userList.append(`<li>${user} ${deleteButton}</li>`);
+                    }
+                }
+            });
+        }
+
+        // Функция для обновления лайков
+        function updateLikes() {
+            $.ajax({
+                url: "/get_likes",  // Запрашиваем лайки
+                type: "GET",
+                success: function(data) {
+                    let likesList = $("#likes-list");
+                    likesList.empty();  // Очищаем текущий список
+
+                    // Добавляем каждого пользователя и их лайки в список
+                    for (let user in data) {
+                        likesList.append(`<li>${user}: ${data[user]} лайков</li>`);
+                    }
+                }
+            });
+        }
+
+        // Обновляем пользователей и лайки каждые 5 секунд
+        setInterval(function() {
+            updateUsers();
+            updateLikes();
+        }, 5000);
+
+        // Обновляем пользователей и лайки сразу после загрузки страницы
+        $(document).ready(function() {
+            updateUsers();
+            updateLikes();
+        });
+    </script>
+</head>
+<body>
+    <h1>Страница администратора</h1>
+
+    <h3>Пользователи:</h3>
+    <ul id="user-list">
+        <!-- Пользователи будут обновляться автоматически через AJAX -->
+    </ul>
+
+    <h3>Показать случайный вопрос:</h3>
+    <form method="POST">
+        <button type="submit" name="show_question">Показать вопрос</button>
+    </form>
+
+    <h2 id="current-question">
+        {% if session['current_question'] %}
+            Вопрос: {{ session['current_question'] }}
+        {% else %}
+            Вопрос еще не задан.
+        {% endif %}
+    </h2>
+
+    <h3>Лайки:</h3>
+    <ul id="likes-list">
+        <!-- Лайки будут обновляться автоматически через AJAX -->
+    </ul>
+</body>
+</html>

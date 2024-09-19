@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        // Функция для обновления лайков
+        function updateLikes() {
+            $.ajax({
+                url: "/get_likes",  // Запрашиваем лайки
+                type: "GET",
+                success: function(data) {
+                    let likesList = $("#likes-list");
+                    likesList.empty();  // Очищаем текущий список
+
+                    // Добавляем каждого пользователя и их лайки в список
+                    for (let user in data) {
+                        likesList.append(`<li>${user}: ${data[user]} лайков</li>`);
+                    }
+                }
+            });
+        }
+
+        // Обновляем лайки каждые 5 секунд
+        setInterval(updateLikes, 5000);
+
+        // Обновляем лайки сразу после загрузки страницы
+        $(document).ready(function() {
+            updateLikes();
+        });
+    </script>
+</head>
+<body>
+    <h1>Результаты лайков</h1>
+    <ul id="likes-list">
+        <!-- Лайки будут обновляться автоматически через AJAX -->
+    </ul>
+</body>
+</html>

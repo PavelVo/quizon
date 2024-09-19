@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+        const socket = io();  // Инициализация сокета
+
+        // Функция для обновления списка пользователей
+        function updateUsers() {
+            $.ajax({
+                url: "/get_users",  // Запрашиваем список пользователей
+                type: "GET",
+                success: function(data) {
+                    let userList = $("#user-list");
+                    userList.empty();  // Очищаем текущий список
+
+                    // Добавляем каждого пользователя в список
+                    for (let i = 0; i < data.length; i++) {
+                        let user = data[i];
+                        let likeButton = '';
+                        
+                        // Показываем кнопку лайка, если это не текущий пользователь
+                        if (user !== "{{ username }}") {
+                            likeButton = `
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="liked_user" value="${user}">
+                                    <button type="submit">👍 Лайк</button>
+                                </form>
+                            `;
+                        }
+
+                        // Добавляем пользователя и кнопку лайка в список
+                        userList.append(`<li>${user} ${likeButton}</li>`);
+                    }
+                }
+            });
+        }
+
+        // Обработка нового вопроса
+        socket.on('new_question', function(data) {
+            let questionElement = $("#current-question");
+            questionElement.text(`Вопрос: ${data.question}`);
+        });
+
+        // Обработка обновления списка пользователей
+        socket.on('user_list_update', function(userList) {
+            let userListElement = $("#user-list");
+            userListElement.empty();  // Очищаем текущий список
+            
+            // Добавляем каждого пользователя в список
+            userList.forEach(function(user) {
+                let likeButton = '';
+                
+                // Показываем кнопку лайка, если это не текущий пользователь
+                if (user !== "{{ username }}") {
+                    likeButton = `
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="liked_user" value="${user}">
+                            <button type="submit">👍 Лайк</button>
+                        </form>
+                    `;
+                }
+
+                // Добавляем пользователя и кнопку лайка в список
+                userListElement.append(`<li>${user} ${likeButton}</li>`);
+            });
+        });
+
+        // Обновляем пользователей сразу после загрузки страницы
+        $(document).ready(function() {
+            updateUsers();
+        });
+    </script>
+</head>
+<body>
+    <h1>Добро пожаловать, {{ username }}</h1>
+
+    <h3>Список пользователей:</h3>
+    <ul id="user-list">
+        <!-- Пользователи будут обновляться автоматически через AJAX -->
+    </ul>
+
+    <h2 id="current-question">
+        <!-- Вопрос будет обновляться автоматически через WebSocket -->
+        Вопрос еще не задан. Пожалуйста, дождитесь администратора.
+    </h2>
+</body>
+</html>
