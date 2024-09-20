@@ -1,10 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Results</title>
+    
+    <!-- Подключение jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- CSS стили -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #likes-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #likes-list li {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s ease;
+        }
+
+        #likes-list li:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+
+    <!-- JavaScript для динамического обновления лайков -->
     <script type="text/javascript">
         // Функция для обновления лайков
         function updateLikes() {
@@ -33,9 +83,11 @@
     </script>
 </head>
 <body>
-    <h1>Результаты лайков</h1>
-    <ul id="likes-list">
-        <!-- Лайки будут обновляться автоматически через AJAX -->
-    </ul>
+    <div class="container">
+        <h1>Результаты лайков</h1>
+        <ul id="likes-list">
+            <!-- Лайки будут обновляться автоматически через AJAX -->
+        </ul>
+    </div>
 </body>
 </html>

@@ -1,11 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game</title>
+    
+    <!-- Подключение jQuery и Socket.io -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
+    <!-- CSS стили -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+        }
+
+        #user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #user-list li {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        #user-list li:hover {
+            background-color: #f1f1f1;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        form {
+            margin: 0;
+        }
+
+        #current-question {
+            background-color: #e3e3e3;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+
     <script type="text/javascript">
         const socket = io();  // Инициализация сокета
 
@@ -77,16 +152,18 @@
     </script>
 </head>
 <body>
-    <h1>Добро пожаловать, {{ username }}</h1>
+    <div class="container">
+        <h1>Добро пожаловать, {{ username }}</h1>
 
-    <h3>Список пользователей:</h3>
-    <ul id="user-list">
-        <!-- Пользователи будут обновляться автоматически через AJAX -->
-    </ul>
+        <h3>Список пользователей:</h3>
+        <ul id="user-list">
+            <!-- Пользователи будут обновляться автоматически через AJAX -->
+        </ul>
 
-    <h2 id="current-question">
-        <!-- Вопрос будет обновляться автоматически через WebSocket -->
-        Вопрос еще не задан. Пожалуйста, дождитесь администратора.
-    </h2>
+        <h2 id="current-question">
+            <!-- Вопрос будет обновляться автоматически через WebSocket -->
+            Вопрос: {{ current_question if current_question else 'Пожалуйста, дождитесь администратора.' }}
+        </h2>
+    </div>
 </body>
 </html>
