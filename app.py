@@ -72,15 +72,15 @@ def admin():
         if 'show_question' in request.form:
             available_questions = [q for q in questions if q not in session.get('used_questions', [])]
             
-            if available_questions:  # Если есть доступные вопросы
-                question_to_show = random.choice(available_questions)
-                session['used_questions'].append(question_to_show)  # Сохраняем вопрос в списке использованных
-                session.modified = True  # Указываем, что сессия была изменена
-                current_question = question_to_show  # Обновляем текущий вопрос
-                socketio.emit('new_question', {'question': current_question}, broadcast=True)
-            else:
-                current_question = 'Все вопросы были показаны!'  # Устанавливаем сообщение о том, что все вопросы показаны
-                socketio.emit('new_question', {'question': current_question}, broadcast=True)
+            if not available_questions:  # Если все вопросы были использованы
+                session['used_questions'] = []  # Сбрасываем список использованных вопросов
+                available_questions = questions  # Перезапускаем вопросы
+            
+            question_to_show = random.choice(available_questions)
+            session['used_questions'].append(question_to_show)  # Сохраняем вопрос в списке использованных
+            session.modified = True  # Указываем, что сессия была изменена
+            current_question = question_to_show  # Обновляем текущий вопрос
+            socketio.emit('new_question', {'question': current_question}, broadcast=True)
 
     return render_template('admin.html', users=users.keys(), current_question=current_question)
 
